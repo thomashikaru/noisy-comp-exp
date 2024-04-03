@@ -2,7 +2,7 @@
 <!--  Comprehension questions appear afterwards in the same slide -->
 
 <template>
-  <Experiment title="Mouse tracking for Reading" translate="no">
+  <Experiment title="Mouse tracking for Reading" translate="no" :imageAssets="imageArray">
 
     <Screen :title="'Welcome'" class="instructions" :validations="{
         SubjectID: {
@@ -92,7 +92,14 @@
             <input type="hidden" class="condition_id" :value="trial.condition_id">
           </form>
           <div class="oval-cursor"></div>
+
           <template>
+            <div v-if="trial.condition_id == 1">
+              <img src="../img/boy.png" />
+            </div>
+          </template>
+
+          <!-- <template > -->
             <div v-if="showFirstDiv" class="readingText" @mousemove="moveCursor" @mouseleave="changeBack">
               <template v-for="(word, index) of trial.text.split(' ')">
                 <span :key="index" :data-index="index" >
@@ -100,28 +107,40 @@
                 </span>
               </template>
             </div>
+          <!-- </template> -->
+
+          <!-- <template> -->
             <div class="blurry-layer" style="opacity: 0.3; filter: blur(3.5px); transition: all 0.3s linear 0s;"> 
               {{trial.text}}
             </div>
-          </template>
-          <button v-if="showFirstDiv" style= "bottom:40%; transform: translate(-50%, -50%)" @click="toggleDivs" :disabled="!isCursorMoving">
-          Done
-          </button>
 
-          <div v-else style = "position:absolute; bottom:15%; text-align: center; width: 100%; min-width: -webkit-fill-available;" >
-            <template>
-              <!-- <form> -->
-                <!-- <div>{{ trial.question.replace(/ ?["]+/g, '') }}</div>
-                <template v-for='(word, index) of trial.response_options'>
-                  <input :id="'opt_'+index" type="radio" :value="word" name="opt" v-model="$magpie.measurements.response"/>{{ word }}<br/>
-                </template> -->
-                <TextareaInput :response.sync = "$magpie.measurements.response" />
-                <!-- <p>Response: {{ userResponse }}</p> -->
-              <!-- </form> -->
-            </template>
-          </div>
-          
-          <button v-if="$magpie.measurements.response" style="transform: translate(-50%, -50%)" @click="
+            <div style="height: 75px;"></div>
+
+            <div>
+              <button v-if="showFirstDiv" @click="toggleDivs" :disabled="!isCursorMoving">
+              Done Reading
+              </button>
+            </div>
+            <!-- removed `style= "bottom:40%; transform: translate(-50%, -50%)"` from button -->
+          <!-- </template> -->
+
+          <!-- <template> -->
+            <div v-if="!showFirstDiv" class="userInput">
+              <p>Please enter what you think the intended sentence was, using your judgment to correct any mistakes or fill in any gaps.</p>
+              <TextareaInput :response.sync = "$magpie.measurements.response" />
+            </div>
+            <!-- <div style = "text-align: center; width: 100%; min-width: -webkit-fill-available;" > -->
+                <!-- <form> -->
+                  <!-- <div>{{ trial.question.replace(/ ?["]+/g, '') }}</div>
+                  <template v-for='(word, index) of trial.response_options'>
+                    <input :id="'opt_'+index" type="radio" :value="word" name="opt" v-model="$magpie.measurements.response"/>{{ word }}<br/>
+                  </template> -->
+                  <!-- <p>Response: {{ userResponse }}</p> -->
+                <!-- </form> -->
+            <!-- </div> -->
+          <!-- </template> -->
+
+          <button v-if="$magpie.measurements.response" @click="
             toggleDivs(); 
             $magpie.addTrialData({
               TrialId: i,
@@ -134,7 +153,7 @@
             });
             $magpie.nextScreen()"
           >
-            Next
+            Next Trial
           </button>
 
         </Slide>
@@ -165,25 +184,29 @@
 // import list1 from '../trials/provo_items_list1.tsv';
 // import list2 from '../trials/provo_items_list2.tsv';
 // import list3 from '../trials/provo_items_list3.tsv';
-import practice from '../trials/provo_items_practice.tsv';
+import practice from '../trials/noisy_comp_items_list_practice.tsv';
+import list0 from '../trials/noisy_comp_items_list_condition_0.csv';
+import list1 from '../trials/noisy_comp_items_list_condition_1.csv';
 import _ from 'lodash';
 
 export default {
   name: 'App',
   data() {
-    // const lists = [list1, list2, list3];
-    // const chosenItems = lists[Math.floor(Math.random() * lists.length)];
-    // const shuffledItems = _.shuffle(chosenItems); 
-    const shuffledItems = [];
-    const trials = _.concat(practice, shuffledItems);
-    // Create a new column in localCoherences called 'response_options'
-    // that concatenates the word in response_true with the two words in response_distractors
-    const updatedTrials = trials.map(trial => {
+    const imageArray = ["../img/boy.png"];
+    const error_types = ["one_sem_sub", "filled_pause", "one_phon_sub_real_word", "two_phon_sub_real_word", "backtrack", "insert", "one_skip"];
+    const lists = [list1];
+    const chosenItems = lists[Math.floor(Math.random() * lists.length)];
+    const shuffledItems = _.shuffle(chosenItems); 
+    // const shuffledItems = [];
+    const updatedShuffledItems = shuffledItems.map(trial => {
       return {
         ...trial,
+        text: trial[_.sample(error_types)]
         // response_options: _.shuffle(`${trial.response_true}|${trial.response_distractors}`.replace(/ ?["]+/g, "").split("|")),
       }
     });
+    console.log(updatedShuffledItems);
+    const updatedTrials = _.concat(practice, updatedShuffledItems);
     return {
       isCursorMoving: false,
       trials: updatedTrials,
@@ -195,6 +218,7 @@ export default {
           y: 0,
         },
       userResponse: "",
+      imageArray: imageArray
   }},
   computed: {
   },
@@ -325,9 +349,15 @@ export default {
     padding-left: 11%;
     padding-right: 11%;
   }
+  .userInput {
+    padding-top: 2%;
+    padding-bottom: 2%;
+    padding-left: 20%;
+    padding-right: 20%;
+  }
   button {
-    position: absolute;
-    bottom: 0;
+    /* position: absolute; */
+    /* bottom: 0; */
     left: 50%;
   }
   .oval-cursor {
