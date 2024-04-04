@@ -1,10 +1,10 @@
 export default {
   experimentId: "1",
-  serverUrl: "https://cui-motr-new.herokuapp.com/",
-  socketUrl: "wss://cui-motr-new.herokuapp.com/socket",
+  serverUrl: "https://noisy-comp-server.herokuapp.com/",
+  socketUrl: "wss://noisy-comp-server.herokuapp.com/socket",
   // this will be used in prolific mode
   completionUrl: "https://app.prolific.co/submissions/complete?cc=C1I4D2OB",
-  contactEmail: "cui.ding@uzh.ch",
+  contactEmail: "thclark@mit.edu",
   // Either 'debug', 'directLink' or 'prolific'
   mode: "debug",
   language: "en",
