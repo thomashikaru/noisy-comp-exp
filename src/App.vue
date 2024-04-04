@@ -295,7 +295,10 @@ export default {
       };
     });
     console.log(updatedShuffledItems);
-    const updatedTrials = _.concat(practice, updatedShuffledItems);
+    const updatedTrials = _.concat(
+      practice,
+      _.sampleSize(updatedShuffledItems, 3)
+    );
     return {
       isCursorMoving: false,
       trials: updatedTrials,
