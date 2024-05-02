@@ -3,7 +3,7 @@
 
 <template>
   <Experiment
-    title="Mouse tracking for Reading"
+    title="Reading Experiment"
     translate="no"
     :imageAssets="imageArray"
   >
@@ -49,9 +49,8 @@
           study, we will track the position of your mouse on screen. The data
           from this study may be presented at scientific conferences and
           published in scientific journals, as well as in online repositories.
-          All data will remain anonymous. Members of the ETH Zurich Ethics
-          Commission may access the original data for examination purposes.
-          Strict confidentiality will be observed at any time. <br /><br />
+          All data will remain anonymous. Strict confidentiality will be
+          observed at any time. <br /><br />
           <b>Who funds this study?</b> This study is funded by ... <br /><br />
           <b> Who reviewed this study? </b> This study is approved by MIT's
           COUHES. <br /><br />
@@ -124,24 +123,36 @@
         In this study, you will read short texts and answer questions about
         them. However, unlike in normal reading, the texts will be blurred. In
         order to bring the text into focus move your mouse over it. Take as much
-        time to read the text as you need in order to understand it. When you
-        are done reading, answer the question at the bottom and click “next” to
-        move on.
+        time to read the text as you need in order to understand it. You will
+        also see an image on each screen, which may be related to the sentences
+        you read. When you are done reading, click the 'Done Reading' button.
       </p>
     </InstructionScreen>
 
-    <InstructionScreen v-if="showImages" :title="'Instructions'">
+    <InstructionScreen :title="'Instructions'">
       <p>
         As you read, you may notice that some of the sentences contain mistakes,
         unusual word choices, or simply do not make sense. This is intentional.
-        The sentences come from a variety of sources, including from people with
-        language impairments. You will also see an image on each screen, which
-        may be related to the sentences you read.
+        The sentences are intended to mimic language from a variety of sources,
+        including from people with language impairments.
+      </p>
+      <p>
+        After reading each sentence, you will then be prompted to type what you
+        think the 'intended' sentence was. Please use your best judgment to
+        correct any mistakes you found in the sentence.
       </p>
     </InstructionScreen>
 
-    <template v-for="(trial, i) of trials">
-      <Screen :key="i" class="main_screen" :progress="i / trials.length">
+    <InstructionScreen :title="'Practice'">
+      <p>You will now have a chance to practice with a few examples.</p>
+    </InstructionScreen>
+
+    <template v-for="(trial, i) of practiceTrials">
+      <Screen
+        :key="i"
+        class="main_screen"
+        :progress="i / practiceTrials.length"
+      >
         <Slide>
           <form>
             <input type="hidden" class="item_id" :value="trial.item_id" />
@@ -159,13 +170,7 @@
           <div class="oval-cursor"></div>
 
           <template>
-            <div v-if="trial.condition_id == 1">
-              <img src="../img/window_comic.png" />
-            </div>
-          </template>
-
-          <template>
-            <div v-if="trial.condition_id == 2">
+            <div v-if="showImages">
               <img src="../img/window_comic.png" />
             </div>
           </template>
@@ -221,8 +226,105 @@
               $magpie.addTrialData({
                 TrialId: i,
                 ItemId: trial.item_id,
-                ConditionId: trial.condition_id,
-                ExperimentId: trial.experiment_id,
+                Condition: trial.condition_id,
+                Experiment: trial.experiment_id,
+                TrialText: trial.text,
+                TrialType: `textInputInference`,
+                userResponse: $magpie.measurements.response,
+              });
+              $magpie.nextScreen();
+            "
+          >
+            Next Trial
+          </button>
+        </Slide>
+      </Screen>
+    </template>
+
+    <InstructionScreen :title="'Practice Complete'">
+      <p>
+        You have completed the practice questions. Press the button to start the
+        experiment.
+      </p>
+    </InstructionScreen>
+
+    <template v-for="(trial, i) of trials">
+      <Screen :key="i" class="main_screen" :progress="i / trials.length">
+        <Slide>
+          <form>
+            <input type="hidden" class="item_id" :value="trial.item_id" />
+            <input
+              type="hidden"
+              class="experiment_id"
+              :value="trial.experiment_id"
+            />
+            <input
+              type="hidden"
+              class="condition_id"
+              :value="trial.condition_id"
+            />
+          </form>
+          <div class="oval-cursor"></div>
+
+          <template>
+            <div v-if="showImages">
+              <img src="../img/window_comic.png" />
+            </div>
+          </template>
+
+          <div
+            v-if="showFirstDiv"
+            class="readingText"
+            @mousemove="moveCursor"
+            @mouseleave="changeBack"
+          >
+            <template v-for="(word, index) of trial.text.split(' ')">
+              <span :key="index" :data-index="index">
+                {{ word }}
+              </span>
+            </template>
+          </div>
+
+          <div
+            class="blurry-layer"
+            style="
+              opacity: 0.3;
+              filter: blur(3.5px);
+              transition: all 0.3s linear 0s;
+            "
+          >
+            {{ trial.text }}
+          </div>
+
+          <div style="height: 75px"></div>
+
+          <div>
+            <button
+              v-if="showFirstDiv"
+              @click="toggleDivs"
+              :disabled="!isCursorMoving"
+            >
+              Done Reading
+            </button>
+          </div>
+
+          <div v-if="!showFirstDiv" class="userInput">
+            <p>
+              Please enter what you think the intended sentence was, using your
+              judgment to correct any mistakes or fill in any gaps.
+            </p>
+            <TextareaInput :response.sync="$magpie.measurements.response" />
+          </div>
+
+          <button
+            v-if="$magpie.measurements.response"
+            @click="
+              toggleDivs();
+              $magpie.addTrialData({
+                TrialId: i,
+                ItemId: trial.item_id,
+                Condition: trial.condition_id,
+                Experiment: trial.experiment_id,
                 TrialText: trial.text,
                 TrialType: `textInputInference`,
                 userResponse: $magpie.measurements.response,
@@ -273,7 +375,7 @@ import _ from "lodash";
 export default {
   name: "App",
   data() {
-    const imageArray = ["../img/boy.png", "../img/window_comic.png"];
+    const imageArray = ["../img/window_comic.png"];
     const error_types = [
       "one_sem_sub",
       "filled_pause",
@@ -286,21 +388,23 @@ export default {
     const lists = [list1];
     const chosenItems = lists[Math.floor(Math.random() * lists.length)];
     const shuffledItems = _.shuffle(chosenItems);
-    const showImages = shuffledItems[0].condition_id == 1;
+    const showImages = true;
     // const shuffledItems = [];
     const updatedShuffledItems = shuffledItems.map((trial) => {
       return {
         ...trial,
-        text: trial[_.sample(error_types)],
+        text: trial[Math.random() < 0.5 ? _.sample(error_types) : "text"],
       };
     });
-    console.log(updatedShuffledItems);
-    const updatedTrials = _.concat(
-      practice,
-      _.sampleSize(updatedShuffledItems, 3)
-    );
+    // console.log(updatedShuffledItems);
+    // const updatedTrials = _.concat(
+    //   practice,
+    //   _.sampleSize(updatedShuffledItems, 3)
+    // );
+    const updatedTrials = _.sampleSize(updatedShuffledItems, 3);
     return {
       isCursorMoving: false,
+      practiceTrials: practice,
       trials: updatedTrials,
       currentIndex: null,
       showFirstDiv: true,
