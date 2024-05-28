@@ -30,7 +30,7 @@
           <b>What is investigated and how?</b> You are being asked to take part
           in a research study being done at the Massachusetts Institute of
           Technology. This study will help us learn about how people read. It
-          will take you around 20-30 minutes to complete. <br /><br />
+          will take you around 20 minutes to complete. <br /><br />
 
           <b>Who can participate?</b> You can participate only if you are an
           adult native speaker of English. <br /><br />
@@ -366,6 +366,15 @@
         orientation="horizontal"
         :options="['Left', 'Right', 'Both']"
       />
+      <br />
+      <br />
+      <p>
+        What did you think about the experiment? Please describe how hard or
+        easy the task felt, anything you noticed about the sentences, or any
+        other thoughts you have.
+      </p>
+      <TextareaInput :response.sync="$magpie.measurements.response" />
+
       <button
         style="bottom: 30%; transform: translate(-50%, -50%)"
         @click="$magpie.saveAndNextScreen()"
