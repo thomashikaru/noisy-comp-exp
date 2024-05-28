@@ -26,34 +26,42 @@
           research project. Your participation is voluntary. Please read the
           text below carefully.
           <br /><br />
+
           <b>What is investigated and how?</b> You are being asked to take part
-          in a research study being done by Thomas Clark, a researcher at the
-          Massachusetts Institute of Technology. This study will help us learn
-          about how people read. It will take you around 20 minutes to complete.
-          <br /><br />
+          in a research study being done at the Massachusetts Institute of
+          Technology. This study will help us learn about how people read. It
+          will take you around 20-30 minutes to complete. <br /><br />
+
           <b>Who can participate?</b> You can participate only if you are an
           adult native speaker of English. <br /><br />
+
           <b>What am I supposed to do as a participant?</b> If you choose to be
           in the study, you will use the computer mouse to read sentences in
           English and answer questions about them. <br /><br />
+
           <b>What are my rights during participation?</b> Your participation in
           this study is voluntary. If you choose to participate, you may change
           your mind and leave the study at any time by closing the web page
           without specifying reasons and without any disadvantages. <br /><br />
+
           <b>What risks and benefits can I expect?</b> There are no foreseeable
           risks for participating in this study. <br /><br />
+
           <b>Will I be compensated for participating?</b> If you participate you
           will be compensated for your time following the amount specified on
           prolific.co. <br /><br />
+
           <b>What data is collected from me and how is it used?</b> During this
           study, we will track the position of your mouse on screen. The data
           from this study may be presented at scientific conferences and
           published in scientific journals, as well as in online repositories.
           All data will remain anonymous. Strict confidentiality will be
           observed at any time. <br /><br />
-          <b>Who funds this study?</b> This study is funded by ... <br /><br />
-          <b> Who reviewed this study? </b> This study is approved by MIT's
-          COUHES. <br /><br />
+
+          <b> Who reviewed this study? </b> This study's protocol has been
+          approved by the MIT Committee on the Use of Humans as Experimental
+          Subjects. <br /><br />
+
           <b> General Contact: </b> Thomas Clark : thclark@mit.edu <br />
         </p>
 
@@ -124,7 +132,7 @@
         them. However, unlike in normal reading, the texts will be blurred. In
         order to bring the text into focus move your mouse over it. Take as much
         time to read the text as you need in order to understand it. You will
-        also see an image on each screen, which may be related to the sentences
+        also see an image on the screen, which may be related to the sentences
         you read. When you are done reading, click the 'Done Reading' button.
       </p>
     </InstructionScreen>
@@ -140,6 +148,10 @@
         After reading each sentence, you will then be prompted to type what you
         think the 'intended' sentence was. Please use your best judgment to
         correct any mistakes you found in the sentence.
+        <b
+          >For the purposes of making corrections, you can ignore punctuation
+          and capitalization.</b
+        >
       </p>
     </InstructionScreen>
 
@@ -214,7 +226,8 @@
           <div v-if="!showFirstDiv" class="userInput">
             <p>
               Please enter what you think the intended sentence was, using your
-              judgment to correct any mistakes or fill in any gaps.
+              judgment to correct any mistakes or fill in any gaps. You can
+              ignore punctuation and capitalization.
             </p>
             <TextareaInput :response.sync="$magpie.measurements.response" />
           </div>
