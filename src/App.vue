@@ -105,8 +105,8 @@
       >
         <br />
         By clicking on the button below you consent to participating in this
-        study: <br /><br />
-        <br />
+        study:
+        <!-- <br /> -->
         <button
           @click="
             $magpie.addExpData({ SubjectId: $magpie.measurements.SubjectID });
@@ -367,9 +367,10 @@
 
 <script>
 // Load data from csv files as javascript arrays with objects
-import practice from "../trials/noisy_comp_items_list_practice.tsv";
+import practice from "../trials/noisy_comp_items_list_practice.csv";
 import list0 from "../trials/noisy_comp_items_list_condition_0.csv";
-import list1 from "../trials/noisy_comp_items_list_condition_1.csv";
+// import list1 from "../trials/noisy_comp_items_list_condition_1.csv";
+import list1 from "../trials/noisy_comp_items_list_05272024.csv";
 import _ from "lodash";
 
 export default {
@@ -377,35 +378,42 @@ export default {
   data() {
     const imageArray = ["../img/window_comic.png"];
     const error_types = [
-      "one_sem_sub",
-      "filled_pause",
-      "one_phon_sub_real_word",
-      "two_phon_sub_real_word",
       "backtrack",
       "insert",
-      "one_skip",
+      "phon_sub",
+      "sem_sub",
+      "skip",
+      // "one_sem_sub",
+      // "filled_pause",
+      // "one_phon_sub_real_word",
+      // "two_phon_sub_real_word",
+      // "backtrack",
+      // "insert",
+      // "one_skip",
     ];
     const lists = [list1];
     const chosenItems = lists[Math.floor(Math.random() * lists.length)];
     const shuffledItems = _.shuffle(chosenItems);
     const showImages = true;
-    // const shuffledItems = [];
-    const updatedShuffledItems = shuffledItems.map((trial) => {
+    let len1 = Math.floor(chosenItems.length / 2);
+    let len2 = chosenItems.length - len1;
+    let temp1 = new Array(len1).fill(1);
+    let temp2 = new Array(len2).fill(0);
+    let clean = _.shuffle(temp1.concat(temp2));
+    const updatedShuffledItems = shuffledItems.map((trial, idx) => {
+      var col = clean[idx] == 0 ? _.sample(error_types) : "clean_sent";
       return {
         ...trial,
-        text: trial[Math.random() < 0.5 ? _.sample(error_types) : "text"],
+        text: trial[col],
+        condition_id: col,
+        experiment_id: "pilot",
       };
     });
-    // console.log(updatedShuffledItems);
-    // const updatedTrials = _.concat(
-    //   practice,
-    //   _.sampleSize(updatedShuffledItems, 3)
-    // );
-    const updatedTrials = _.sampleSize(updatedShuffledItems, 3);
+    // const updatedTrials = _.sampleSize(updatedShuffledItems, 3);
     return {
       isCursorMoving: false,
       practiceTrials: practice,
-      trials: updatedTrials,
+      trials: updatedShuffledItems,
       currentIndex: null,
       showFirstDiv: true,
       // currentItem: null,

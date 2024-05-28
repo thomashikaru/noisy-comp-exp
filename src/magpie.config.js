@@ -6,6 +6,7 @@ export default {
   completionUrl: "https://app.prolific.co/submissions/complete?cc=C1I4D2OB",
   contactEmail: "thclark@mit.edu",
   // Either 'debug', 'directLink' or 'prolific'
-  mode: "directLink",
+  // mode: "directLink",
+  mode: "debug",
   language: "en",
 };
