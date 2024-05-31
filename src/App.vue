@@ -211,7 +211,11 @@
     </InstructionScreen>
 
     <InstructionScreen :title="'Practice'">
-      <p>You will now have a chance to practice with a few examples.</p>
+      <p>
+        You will now have a chance to practice with a few examples. Remember,
+        the sentences will be blurred, and you need to move your mouse over the
+        words to reveal them.
+      </p>
     </InstructionScreen>
 
     <template v-for="(trial, i) of practiceTrials">
