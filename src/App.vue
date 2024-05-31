@@ -22,9 +22,8 @@
           <b> Information About this Study </b>
         </div>
         <p>
-          We would like to ask you if you are willing to participate in our
-          research project. Your participation is voluntary. Please read the
-          text below carefully.
+          Your participation in this research study is voluntary. Please read
+          the text below carefully.
           <br /><br />
 
           <b>What is investigated and how?</b> You are being asked to take part
@@ -47,22 +46,21 @@
           <b>What risks and benefits can I expect?</b> There are no foreseeable
           risks for participating in this study. <br /><br />
 
-          <b>Will I be compensated for participating?</b> If you participate you
-          will be compensated for your time following the amount specified on
-          prolific.co. <br /><br />
+          <b>Will I be compensated for participating?</b> If you complete the
+          experiment, you will be compensated for your time following the amount
+          specified on Prolific. <br /><br />
 
           <b>What data is collected from me and how is it used?</b> During this
           study, we will track the position of your mouse on screen. The data
           from this study may be presented at scientific conferences and
           published in scientific journals, as well as in online repositories.
-          All data will remain anonymous. Strict confidentiality will be
-          observed at any time. <br /><br />
+          All data will remain anonymous. <br /><br />
 
           <b> Who reviewed this study? </b> This study's protocol has been
           approved by the MIT Committee on the Use of Humans as Experimental
           Subjects. <br /><br />
 
-          <b> General Contact: </b> Thomas Clark : thclark@mit.edu <br />
+          <b> General Contact: </b> thclark@mit.edu <br />
         </p>
 
         <br />
@@ -128,31 +126,88 @@
 
     <InstructionScreen :title="'Instructions'">
       <p>
-        In this study, you will read short texts and answer questions about
-        them. However, unlike in normal reading, the texts will be blurred. In
-        order to bring the text into focus move your mouse over it. Take as much
-        time to read the text as you need in order to understand it. You will
-        also see an image on the screen, which may be related to the sentences
-        you read. When you are done reading, click the 'Done Reading' button.
+        In this study, you will read sentences that may possibly contain errors,
+        and write what you think the correct version of the sentence is. Unlike
+        in normal reading, however, the texts will be blurred. In order to bring
+        the text into focus, move your mouse over it. When you are done reading,
+        click the 'Done Reading' button.
       </p>
+
+      <p>
+        The sentences are based on a scenario, which is illustrated by the
+        following comic strip. This image will be on each screen of the
+        experiment.
+      </p>
+      <br />
+      <img src="../img/window_comic.png" />
     </InstructionScreen>
 
     <InstructionScreen :title="'Instructions'">
       <p>
         As you read, you may notice that some of the sentences contain mistakes,
-        unusual word choices, or simply do not make sense. This is intentional.
+        unusual word choices, or simply don't make sense. This is intentional.
         The sentences are intended to mimic language from a variety of sources,
-        including from people with language impairments.
+        including from people with language impairments. You'll be dealing with
+        transcribed versions of spoken language, so it may contain filler words
+        like "um" or "uh".
       </p>
       <p>
         After reading each sentence, you will then be prompted to type what you
-        think the 'intended' sentence was. Please use your best judgment to
-        correct any mistakes you found in the sentence.
-        <b
-          >For the purposes of making corrections, you can ignore punctuation
-          and capitalization.</b
-        >
+        think the intended sentence was. Please correct any mistakes you found
+        in the sentence. These could be missing words, the wrong word, typos,
+        filler words, etc. There may be many ways to correct a sentence, so just
+        use your best judgment -- there's not one right answer.
+        <b>
+          For the purposes of making corrections, you can ignore punctuation and
+          capitalization.
+        </b>
+        You will see some examples on the next page.
       </p>
+    </InstructionScreen>
+
+    <InstructionScreen :title="'Instructions'">
+      <p>
+        The following are some examples similar to what you might see, paired
+        with examples of how you might answer.
+      </p>
+      <br /><br />
+      <table>
+        <thead>
+          <tr>
+            <th>Example Input</th>
+            <th width="30" align="center"></th>
+            <th>Example Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>my favorite dessert is ice cream .</td>
+            <td width="30" align="center">→</td>
+            <td>my favorite dessert is ice cream .</td>
+          </tr>
+          <tr>
+            <td>my um favorite desert is ice creme .</td>
+            <td width="30" align="center">→</td>
+            <td>my favorite dessert is ice cream .</td>
+          </tr>
+          <tr>
+            <td>boys cat sat on mat .</td>
+            <td width="30" align="center">→</td>
+            <td>the boy's cat sat on the mat</td>
+          </tr>
+        </tbody>
+      </table>
+      <br /><br />
+      <ul>
+        <li>If there's nothing wrong with the sentence, just retype it.</li>
+        <li>
+          If there are mistakes, type what you think the person likely meant.
+        </li>
+        <li>
+          You don't need to include periods, commas, apostophes, or other
+          punctuation (but it's OK if you do).
+        </li>
+      </ul>
     </InstructionScreen>
 
     <InstructionScreen :title="'Practice'">
@@ -257,7 +312,8 @@
     <InstructionScreen :title="'Practice Complete'">
       <p>
         You have completed the practice questions. Press the button to start the
-        experiment.
+        experiment. Remember, there's isn't one right answer, so just use your
+        best judgment!
       </p>
     </InstructionScreen>
 
@@ -278,6 +334,10 @@
             />
           </form>
           <div class="oval-cursor"></div>
+
+          <template>
+            <div>Sentence {{ i + 1 }} of {{ trials.length }}</div>
+          </template>
 
           <template>
             <div v-if="showImages">
@@ -324,7 +384,8 @@
           <div v-if="!showFirstDiv" class="userInput">
             <p>
               Please enter what you think the intended sentence was, using your
-              judgment to correct any mistakes or fill in any gaps.
+              judgment to correct any mistakes or fill in any gaps. You can
+              ignore punctuation and capitalization.
             </p>
             <TextareaInput :response.sync="$magpie.measurements.response" />
           </div>
@@ -371,7 +432,8 @@
       <p>
         What did you think about the experiment? Please describe how hard or
         easy the task felt, anything you noticed about the sentences, or any
-        other thoughts you have.
+        other thoughts you have. If anything was confusing or frustrating,
+        please feel free to let us know!
       </p>
       <TextareaInput :response.sync="$magpie.measurements.response" />
 
