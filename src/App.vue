@@ -449,6 +449,25 @@
       </button>
     </Screen>
 
+    <Screen>
+      <p>
+        The next screen will prompt you to submit your results. There may be a
+        brief loading period as your results are sent to the server. Once this
+        is completed, the web page will redirect you back to Prolific. On some
+        browsers, you may get an alert box asking if you are sure you want to
+        leave the page. Please say Yes/OK to the this alert and you will be
+        taken back to Prolific. If you run into any issues please reach out to
+        us via Prolific and we will work with you to address the issue.
+      </p>
+
+      <button
+        style="bottom: 30%; transform: translate(-50%, -50%)"
+        @click="$magpie.nextScreen()"
+      >
+        Continue
+      </button>
+    </Screen>
+
     <SubmitResultsScreen />
   </Experiment>
 </template>
